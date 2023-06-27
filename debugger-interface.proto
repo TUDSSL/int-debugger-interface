@@ -1,0 +1,31 @@
+syntax = "proto2";
+
+import "nanopb.proto";
+
+import "calibration.proto";
+import "supply.proto";
+
+package Debugger;
+
+message Upstream {
+  oneof packet {
+    Emulation.CalibrationResponse calibration_response = 1;
+    Supply.DataStreamResponse datastream_response = 2;
+    Supply.DataStream datastream = 3;
+    Supply.BreakpointStream breakpoint_stream = 4;
+    Supply.StatusStream status_stream = 5;
+    Supply.ProfileDataRequestStream profile_data_request = 6;
+    Supply.InitialParameterResponse initial_param_response = 7;
+  }
+}
+message Downstream {
+  oneof packet {
+    Emulation.CalibrationRequest calibration_request = 1;
+    Supply.DataStreamRequest datastream_request = 2;
+    Supply.ModeRequest mode_request = 3;
+    Supply.PauseRequest pause_request = 4;
+    Supply.SupplyValueChangeRequest supply_value_request = 5;
+    Supply.ProfileDataRespond profile_data_respond = 6;
+    Supply.InitialParameterRequest initial_param_request = 7;
+  }
+}

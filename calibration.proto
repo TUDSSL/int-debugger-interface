@@ -1,0 +1,26 @@
+syntax = "proto2";
+
+import "nanopb.proto";
+
+package Emulation;
+
+enum CalibrationCommand {
+	CurrentZero = 1;
+	Voltage_EmulatorOutput = 2;
+	Voltage_DebugOutput = 3;
+
+}
+
+enum CalibrationResult {
+	Success = 1;
+	Failure = 2;
+}
+
+message CalibrationRequest {
+	required CalibrationCommand request = 1;
+}
+
+message CalibrationResponse {
+	required CalibrationCommand request = 1;
+	required CalibrationResult result = 2;
+}

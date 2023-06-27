@@ -1,0 +1,171 @@
+syntax = "proto2";
+
+import "nanopb.proto";
+
+package Supply;
+
+enum DataStreamRequestResult {
+	Success = 1;
+	Failure = 2;
+}
+
+enum OperationMode {
+	Off = 0;
+	Sawtooth = 1;
+	ConstantVoltage = 2;
+	Replay = 3;
+	Square = 4;
+	Triangle = 5;
+	Passive = 6;
+}
+
+enum PauseCommand {
+	Pause = 1;
+	Resume =2;
+}
+
+enum PauseResult {
+	Paused = 1;
+	Resumed = 2;
+	Failed = 3;
+}
+
+enum SupplyValueOption {
+	virtCapCapacitanceuF = 1;
+	virtCapVoltage = 2;
+	virtOutHighThreshholdV = 3;
+	virtOutLowThreshholdV = 4;
+	virtCapOutputVoltage = 5;
+	virtCapMaxVoltage = 6;
+	virtCapOutputting = 7;
+	virtCapIdealMode = 22;
+	virtCapInputCurrent = 8;
+	profilerEnabled = 9;
+
+	constantVoltage = 10;
+
+	sawtoothVoltage = 11;
+	sawtoothPeriod = 12;
+
+	squareVoltage = 13;
+	squareDC = 14;
+	squarePeriod = 15;
+
+	triangleVoltage = 16;
+	trianglePeriod = 17;
+
+	minVoltage = 18;
+
+	virtCapCompensation = 19;
+
+	enableVDebugOutput = 20;
+	setCurMeasBypass = 21;
+	setEmulatorOutputDischarge = 23;
+	setEmulatorSampleAndHold = 24;
+}
+
+message ModeRequest {
+	required OperationMode mode = 1;
+}
+
+message SupplyValueChangeRequest {
+	required SupplyValueOption key = 1;
+	oneof value {
+	  int32 value_i = 2;
+	  float value_f = 3;
+	  bool value_b = 4;
+	}
+}
+
+message DataStreamRequest {
+	required DataStream request = 1;
+	required bool active = 2;
+}
+
+message DataStreamResponse {
+	required DataStream request = 1;
+	required DataStreamRequestResult result = 2;
+}
+
+message DataStreamRawVI {
+	required float voltage = 1;
+	required float current = 2;
+	optional float current_high = 3;
+	optional float current_low = 4;
+	optional float debug_voltage = 5;
+}
+
+message StatusStreamDTO {
+	optional OperationMode status = 1;
+	optional uint32 currentDACValue = 2;
+}
+
+message Breakpoint {
+	required bool enabled = 1;
+}
+
+message BreakpointStream {
+	oneof packet{
+		Breakpoint breakp = 1;
+	}
+}
+
+message DataStream {
+	oneof packet {
+		DataStreamRawVI volt_current = 1;
+	}
+}
+
+message StatusStream {
+	oneof packet {
+			StatusStreamDTO status = 1;
+	}
+}
+
+message PauseRequest {
+	required PauseCommand request = 1;
+}
+
+message PauseResponse {
+	required PauseCommand request = 1;
+	required PauseResult result = 2;
+}
+
+message ProfileDataRequest {}
+
+message ProfileDataRequestStream {
+	oneof packet {
+		ProfileDataRequest data = 1;
+	}
+}
+
+message ProfileDataRespond {
+	required uint64 time = 1;
+	required float current = 2;
+	required float voltage = 3;
+}
+
+message InitialParameterRequest {
+
+}
+
+message InitialParameterRequestStream {
+	oneof packet {
+		InitialParameterRequest data = 1;
+	}
+}
+
+message InitialParameterResponse {
+	required SupplyValueOption key = 1;
+	oneof value {
+	  int32 value_i = 2;
+	  float value_f = 3;
+	  bool value_b = 4;
+	}
+}
+
+message InitialParameterResponseStream {
+	oneof packet {
+		InitialParameterResponse data = 1;
+	}
+}
